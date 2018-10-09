@@ -65,74 +65,20 @@
     
 <section class="features12 cid-r5XHzSHRBv" id="features12-w" style="padding-top: 40px;">    
 
-    <div class="container">
-        <h2 class="mbr-section-title pb-2 mbr-fonts-style display-2">
-            Nome da ONG</h2>
-        <h3 class="mbr-section-subtitle pb-3 mbr-fonts-style display-7">Cidada, Estado, Região.&nbsp;</h3>
-
-        <div class="media-container-row pt-5">
-            <div class="block-content align-right">
-                <div class="card pl-3 pr-3 pb-5">
-                    <div class="mbr-card-img-title">
-                        <div class="card-img pb-3">
-                             <span class="mbr-iconfont mbri-hearth"></span>
-                        </div>
-                        <div class="mbr-crt-title">
-                            <h4 class="card-title py-2 mbr-crt-title mbr-fonts-style display-7">
-                                Acolhimento das vítimas</h4>
-                        </div>
-                    </div>                
-
-                    <div class="card-box">
-                        <p class="mbr-text mbr-section-text mbr-fonts-style display-7"></p><p>ONGs voltadas ao acolhimento de mulheres, crianças, população LGBTQ+, etc</p><p></p>
-                    </div>
-                </div>
-
-                
-            </div>
-
-            <div class="mbr-figure" style="width: 50%;">
-                <img src="assets/images/mbr-982x795.jpg" alt="Mobirise" title="">
-            </div>
-
-            <div class="block-content align-left  ">
-                <div class="card pl-3 pr-3 pb-5">
-                    <div class="mbr-card-img-title">
-                        <div class="card-img pb-3">
-                             <span class="mbr-iconfont mbri-sites"></span>
-                        </div>
-                        <div class="mbr-crt-title">
-                            <h4 class="card-title py-2 mbr-crt-title mbr-fonts-style display-7">Informações:</h4>
-                        </div>
-                    </div>                
-
-                    <div class="card-box">
-                        <p class="mbr-text mbr-section-text mbr-fonts-style display-7">Endereço.<br>Telefone.<br>e-Mail.<br>Possui espaço físico?<br><br></p>
-                    </div>
-                </div>
-
-                
-            </div>
-        </div>
+    <div class="container"><div style="float: right"><button class="btn btn-primary">Compartilhar</button></div>
+        <div class="clearfix"></div>
+        <h2 class="mbr-section-title pb-2 mbr-fonts-style display-2" id="acolhimento-nome">Nome</h2>
+        <h3 class="mbr-section-subtitle pb-3 mbr-fonts-style display-7" id="acolhimento-uf-municipio">Cidade - UF</h3>
+        <h3 class="mbr-section-subtitle pb-3 mbr-fonts-style display-7" id="acolhimento-descricao">Descrição</h3>
     </div>
     <div class="container" style="padding-top: 40px;">
-        <h2 class="mbr-section-title pb-2 mbr-fonts-style display-2">Acolhimentos</h2>
+        <h4 class="mbr-section-subtitle pb-3 mbr-fonts-style display-7">Adicionar comentário</h4>
         <div class="row">
             <div class="col-sm-12">
-                <table class="table table-striped">
-                    <thead class="thead-dark">
-                        <th>Nome</th>
-                        <th>Idade</th>
-                        <th>UF</th>
-                        <th></th>
-                    </thead>
-                    <tbody id="lista_atendimentos">
-
-                    </tbody>
-                </table>
+                <textarea rows="6" style="width: 100%; max-width: 100%"></textarea>
             </div>
             <div class="col-sm-12 text-center">
-                <a href="cadastro-ong.html"><button class="btn btn-primary">Novo Acolhimento</button></a>
+                <a href="cadastro-ong.html"><button class="btn btn-primary">Adicionar</button></a>
             </div>
         </div>
     </div>
@@ -190,15 +136,15 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $.ajax({
-          url: "http://blueonu.mybluemix.net/listaatendimentos?id_ong=1",
+          url: "http://blueonu.mybluemix.net/detalhaatendimento?id=<?=$_GET['id']?>",
           context: document.body,
           cache:true,
           crossDomain: true,
           dataType: 'jsonp'
       }).done(function(data) {
-          data.forEach(function(element) {
-              $("#lista_atendimentos").append("<tr><td>"+element.NOME+"</td><td>"+element.IDADE+"</td><td>"+element.UF+"</td><td><a href='caso.php?id="+element.HORA_ATENDIMENTO+"'>Acompanhar</a></td></tr>");
-          });
+          $("#acolhimento-nome").html(data.NOME);
+          $("#acolhimento-uf-municipio").html(data.UF+" - "+data.MUNICIPIO);
+          $("#acolhimento-descricao").html(data.DESCRICAO);
       });
     });
 

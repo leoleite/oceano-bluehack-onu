@@ -54,17 +54,17 @@
         <div class="menu-logo">
             <div class="navbar-brand">
                 <span class="navbar-logo">
-                    <a href="/">
+                    <a href="/index.php">
                          <img src="assets/images/waves-2135344-640-122x122.png" alt="logo ocean" title="Ocean" style="height: 3.9rem;">
                     </a>
                 </span>
-                <span class="navbar-caption-wrap"><a class="navbar-caption text-secondary display-1" href="/">OCEAN</a></span>
+                <span class="navbar-caption-wrap"><a class="navbar-caption text-secondary display-1" href="/index.php">OCEAN</a></span>
             </div>
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
-                    <a class="nav-link link text-white display-4" href="page2.html#testimonials1-m">HOME</a>
-                </li><li class="nav-item"><a class="nav-link link text-white display-4" href="programdorawebjessicalane.html#content9-s">SOBRE</a></li><li class="nav-item"><a class="nav-link link text-white display-4" href="programdorawebjessicalane.html#tabs3-h">CADASTRO</a></li><li class="nav-item"><a class="nav-link link text-white display-4" href="programdorawebjessicalane.html#footer7-5">
+                    <a class="nav-link link text-white display-4" href="/index.php">HOME</a>
+                </li><li class="nav-item"><a class="nav-link link text-white display-4" href="#content9-s">SOBRE</a></li><li class="nav-item"><a class="nav-link link text-white display-4" href="programdorawebjessicalane.html#tabs3-h">CADASTRO</a></li><li class="nav-item"><a class="nav-link link text-white display-4" href="programdorawebjessicalane.html#footer7-5">
                         </a></li></ul>
             
         </div>
@@ -88,7 +88,7 @@
                     <div class="icons-media-container mbr-white">
                         <div class="card col-12 col-md-6">
                             <div class="icon-block">
-                            <a href="https://mobirise.co/">
+                            <a href="/painel-ong.html">
                                 <span class="mbr-iconfont mbri-users" style="font-size: 50px;"></span>
                             </a>
                             </div>

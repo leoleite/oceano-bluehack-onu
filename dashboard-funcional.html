@@ -1,0 +1,307 @@
+<html>
+  <head>
+        <meta charset="UTF-8">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'line','geochart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        /*
+         * GRÁFICO DE TRÁFICO DE PESSOAS POR FAIXA ETÁRIA
+         */
+        $.ajax({
+            url: "http://blueonu.mybluemix.net/traficoporfaixa",
+            context: document.body,
+            cache:true,
+            crossDomain: true,
+            dataType: 'jsonp'
+        }).done(function(data) {
+            var array = [['Faixa Etária', 'Quantidade'],
+                ['0 a 12 anos',     parseInt(data.QTDA)],
+                ['13 a 17 anos',      parseInt(data.QTDB)],
+                ['18 a 59 anos',  parseInt(data.QTDC)],
+                ['Acima de 60 anos', parseInt(data.QTDD)]];
+            var data = google.visualization.arrayToDataTable(
+                array
+            );
+            
+            var options = {
+                title: 'Tráfico de Pessoas por Faixa Etária'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('pietraficoporfaixa'));
+
+            chart.draw(data, options);
+        });
+
+        /*
+         * GRÁFICO DE EXPLORAÇÃO SEXUAL POR FAIXA ETÁRIA
+         */ 
+
+        $.ajax({
+            url: "http://blueonu.mybluemix.net/exploracaoporsexoporfaixa",
+            context: document.body,
+            cache:true,
+            crossDomain: true,
+            dataType: 'jsonp'
+        }).done(function(data) {
+            var array = [['Faixa Etária', 'Quantidade'],
+                ['Meninos 0 a 12 anos',     parseInt(data.QTDA)],
+                ['Meninos 13 a 17 anos',      parseInt(data.QTDB)],
+                ['Meninas 0 a 12 anos',  parseInt(data.QTDC)],
+                ['Meninas 13 a 17 anos', parseInt(data.QTDD)]];
+            var data = google.visualization.arrayToDataTable(
+                array
+            );
+            
+            var options = {
+                title: 'Exploração Sexual por Faixa Etaria'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('pieexploracaosexofaixa'));
+
+            chart.draw(data, options);
+        });
+
+        /*
+         * GRÁFICO DE TOTAL DE ATENDIMENTOS DE TRÁFICO DE PESSOAS POR ANO
+         */
+
+        $.ajax({
+            url: "http://blueonu.mybluemix.net/totalano",
+            context: document.body,
+            crossDomain: true,
+            cache:true,
+            dataType: 'jsonp'
+        }).done(function(data) {
+            var dataArray = [
+                ['Ano', 'Atendimentos']
+            ];
+            data.forEach(function(element) {
+                dataArray.push([element.ANO.toString(), parseInt(element.QTD)]);
+            });
+            var data = google.visualization.arrayToDataTable(dataArray);
+
+            var options = {
+                title: 'Atendimentos de Vítimas de Trafico de Pessoas',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        });
+
+        /*
+         * GRÁFICO DE TOTAL DE ATENDIMENTOS DE EXPLORACAO SEXUAL POR ANO
+         */
+
+        $.ajax({
+            url: "http://blueonu.mybluemix.net/totalexploracaoano",
+            context: document.body,
+            crossDomain: true,
+            cache:true,
+            dataType: 'jsonp'
+        }).done(function(data) {
+            var dataArray = [
+                ['Ano', 'Atendimentos']
+            ];
+            data.forEach(function(element) {
+                dataArray.push([element.ANO.toString(), parseInt(element.QTD)]);
+            });
+            var data = google.visualization.arrayToDataTable(dataArray);
+
+            var options = {
+                title: 'Atendimentos de Vítimas de Exploração Sexual Infantil',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('line_exploracao_total'));
+
+            chart.draw(data, options);
+        });
+
+        /*
+         * GRÁFICO MAPA DE INCIDENCIA DE TRÁFICO POR UF
+         */
+
+        $.ajax({
+            url: "http://blueonu.mybluemix.net/traficoporuf",
+            context: document.body,
+            crossDomain: true,
+            cache:true,
+            dataType: 'jsonp'
+        }).done(function(data) {
+            var dataArray = [
+                ['State',   'Casos']
+            ];
+            data.forEach(function(element) {
+                dataArray.push(["BR-"+element.UF, parseInt(element.QTD)]);
+            });
+            var data = google.visualization.arrayToDataTable(dataArray);
+
+            var options = {
+                region: 'BR',
+                resolution: 'provinces',
+                colorAxis: {colors: ['white', 'red']},
+                title: 'Atendimento de Vítimas por Estado'
+            };
+
+            var chart = new google.visualization.GeoChart(document.getElementById('geochart'));
+            google.visualization.events.addListener(chart, "regionClick", function (eventData) {
+                var region = eventData["region"];
+                var array = region.split("-");
+                var uf = array[1];
+                buscaEstatisticasUF(uf);
+            });
+            chart.draw(data, options);
+        });
+        
+        function buscaEstatisticasUF(siglaUF) {
+            $("#municipios_content").html('');
+            $.ajax({
+                url: "http://blueonu.mybluemix.net/traficopormunicipiouf?uf="+siglaUF,
+                context: document.body,
+                crossDomain: true,
+                cache:true,
+                dataType: 'jsonp'
+            }).done(function(data) {
+                data.forEach(function(element) {
+                    $("#municipios_content").append(
+                        "<tr>"
+                        +"  <td>"+element.MUNICIPIO+"</td><td>"+element.QTD+"</td>"
+                        +"</tr>"
+                    )
+                });
+            });
+        }
+
+        /*
+         * GRÁFICO DE BARRA DE MUNICIPIOS COM MAIOR NUMERO DE ANTENDIMENTOS DE TRAFICO DE PESSOAS NACIONAL
+         */
+
+        $.ajax({
+            url: "http://blueonu.mybluemix.net/topmunicipios",
+            context: document.body,
+            crossDomain: true,
+            cache:true,
+            dataType: 'jsonp'
+        }).done(function(data) {
+            var dataArray = [
+                ['Município', 'Atendimentos']
+            ];
+            data.forEach(function(element) {
+                dataArray.push([element.MUNICIPIO, parseInt(element.QTD)]);
+            });
+            var data = google.visualization.arrayToDataTable(dataArray);
+
+            var options = {
+                title: 'Municípios com maior número de atendimentos',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('barmunicipios'));
+
+            chart.draw(data, options);
+        });
+
+        /*
+         * GRÁFICO MAPA DE INCIDENCIA DE EXPLORACAO SEXUAL INFANTIL POR UF
+         */
+
+        $.ajax({
+            url: "http://blueonu.mybluemix.net/exploracaoporuf",
+            context: document.body,
+            crossDomain: true,
+            cache:true,
+            dataType: 'jsonp'
+        }).done(function(data) {
+            var dataArray = [
+                ['State',   'Casos']
+            ];
+            data.forEach(function(element) {
+                dataArray.push(["BR-"+element.UF, parseInt(element.QTD)]);
+            });
+            var data = google.visualization.arrayToDataTable(dataArray);
+
+            var options = {
+                region: 'BR',
+                resolution: 'provinces',
+                colorAxis: {colors: ['white', 'red']},
+                title: 'Exploração Sexual Infantil por Estado'
+            };
+
+            var chart = new google.visualization.GeoChart(document.getElementById('geoexploracao'));
+            google.visualization.events.addListener(chart, "regionClick", function (eventData) {
+                var region = eventData["region"];
+                var array = region.split("-");
+                var uf = array[1];
+                buscaEstatisticasExploracaoUF(uf);
+            });
+            chart.draw(data, options);
+        });
+
+        function buscaEstatisticasExploracaoUF(siglaUF) {
+            $("#municipiosExploracao_content").html('');
+            $.ajax({
+                url: "http://blueonu.mybluemix.net/exploracaopormunicipiouf?uf="+siglaUF,
+                context: document.body,
+                crossDomain: true,
+                cache:true,
+                dataType: 'jsonp'
+            }).done(function(data) {
+                data.forEach(function(element) {
+                    $("#municipiosExploracao_content").append(
+                        "<tr>"
+                        +"  <td>"+element.MUNICIPIO+"</td><td>"+element.QTD+"</td>"
+                        +"</tr>"
+                    )
+                });
+            });
+        }
+
+      }
+    </script>
+  </head>
+  <body>
+      <div class="row">
+        <div id="pietraficoporfaixa" class="col-md-6 col-sm-12" style="height: 500px;"></div>
+        <div id="pieexploracaosexofaixa" class="col-md-6 col-sm-12" style="height: 500px;"></div>
+        <div id="curve_chart" class="col-lg-6 col-md-6 col-sm-12" style="height: 300px"></div>
+        <div id="line_exploracao_total" class="col lg-6 col-md-6 col-sm-12" style="height: 300px"></div>
+        <div id="geochart" class="col-lg-12 col-md-12 col-sm-12" style="height: 700px"></div>
+        <div id="municipios" class="col-lg-12 col-md-12 col-sm-12" style="height: 300px; overflow-y:scroll">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <th>Município</th>
+                    <th>Quantidade</th>
+                </thead>
+                <tbody id="municipios_content">
+
+                </tbody>
+            </table>
+        </div>
+        <div id="barmunicipios" style="width: 100%; height: 500px"></div>
+        <div id="geoexploracao" class="col-lg-12 col-md-12 col-sm-12" style="height: 700px"></div>
+        <div id="municipiosExploracao" class="col-lg-12 col-md-12 col-sm-12" style="height: 300px; overflow-y:scroll">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <th>Município</th>
+                    <th>Quantidade</th>
+                </thead>
+                <tbody id="municipiosExploracao_content">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </body>
+</html>
